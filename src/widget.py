@@ -28,6 +28,8 @@ def mask_account_card(card_data: str) -> str:
                 card_data.append(get_mask_account(i))
             else:
                 return "Введены некоректные данные"
+        else:
+            return "Введены некоректные данные"
     return " ".join(card_data)
 
 
@@ -37,5 +39,5 @@ def get_data(iso_string: str) -> str:
 
 
 if __name__ == "__main__":
-    print(mask_account_card("Счет 35383033474447895560пш"))
+    print(mask_account_card("MasterCard 7158300734726758"))
     print(get_data("2024-03-11T02:26:18.671407"))
