@@ -8,16 +8,16 @@ XXXX XX** **** XXXX, где X — это цифра номера. То есть 
 7000 79** **** 6361  # выход функции"""
 
 
-def get_mask_card_number(input_cart_number: str) -> str:
+def get_mask_card_number(input_card_number: str) -> str:
     """Функция маскировки банковской карты"""
-    if len(input_cart_number) != 16:
+    if len(input_card_number) != 16:
         return "Номер карты должен содержать 16 символов"
     else:
         list_input_cart_number = [
-            str(input_cart_number)[0:4],
-            str(input_cart_number)[4:6] + "**",
+            str(input_card_number)[0:4],
+            str(input_card_number)[4:6] + "**",
             "****",
-            str(input_cart_number)[12:16],
+            str(input_card_number)[12:16],
         ]
 
     return " ".join(list_input_cart_number)
