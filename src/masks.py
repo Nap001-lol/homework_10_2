@@ -36,6 +36,8 @@ get_mask_account
 
 def get_mask_account(input_number_account: str) -> str:
     """Функция маскировки номера банковского счета"""
+    if not input_number_account.isdigit():
+        return "Номер карты должен содержать только цифры!"
     if len(input_number_account) >= 4:
         return "**" + str(input_number_account)[-4:]
     else:
