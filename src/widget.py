@@ -1,4 +1,4 @@
-""" Пример для карты
+"""Пример для карты
 Visa Platinum 7000792289606361  # входной аргумент
 Visa Platinum 7000 79 ** ** ** 6361  # выход функции
 
@@ -7,8 +7,9 @@ Visa Platinum 7000 79 ** ** ** 6361  # выход функции
 Счет ** 4305  # выход функции
 """
 
-
 from datetime import datetime
+
+from masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(card_data: str) -> str:
@@ -21,10 +22,10 @@ def mask_account_card(card_data: str) -> str:
             card_data.append(i)
         elif i.isdigit():
             if len(i) == 16:
-                list_digit_mask_card = [str(i)[0:4], str(i)[4:6] + "**", "****", str(i)[12:16],]
-                card_data.append(" ".join(list_digit_mask_card))
+                list_digit_mask_card = get_mask_card_number(i)
+                card_data.append(list_digit_mask_card)
             elif len(i) == 20:
-                card_data.append("**" + str(i)[-4:])
+                card_data.append(get_mask_account(i))
             else:
                 return "Введены некоректные данные"
     return " ".join(card_data)
@@ -36,5 +37,5 @@ def get_data(iso_string: str) -> str:
 
 
 if __name__ == "__main__":
-    print(mask_account_card("Счет 73654108430135874305"))
+    print(mask_account_card("Счет 35383033474447895560"))
     print(get_data("2024-03-11T02:26:18.671407"))
