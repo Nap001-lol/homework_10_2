@@ -10,6 +10,8 @@ XXXX XX** **** XXXX, где X — это цифра номера. То есть 
 
 def get_mask_card_number(input_card_number: str) -> str:
     """Функция маскировки банковской карты"""
+    if not input_card_number.isdigit():
+        return "Номер карты должен содержать только цифры!"
     if len(input_card_number) != 16:
         return "Номер карты должен содержать 16 символов"
     else:
