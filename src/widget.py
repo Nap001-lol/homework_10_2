@@ -37,5 +37,5 @@ def get_data(iso_string: str) -> str:
 
 
 if __name__ == "__main__":
-    print(mask_account_card("Счет 35383033474447895560"))
+    print(mask_account_card("Счет 35383033474447895560пш"))
     print(get_data("2024-03-11T02:26:18.671407"))
