@@ -16,21 +16,21 @@ def mask_account_card(card_data: str) -> str:
     """Функция, котрая обрабатывает информацию о картах(счетах)"""
 
     list_card_data = card_data.split()
-    card_data = []
+    mask_card_data = []
     for i in list_card_data:
         if i.isalpha():
-            card_data.append(i)
+            mask_card_data.append(i)
         elif i.isdigit():
             if len(i) == 16:
                 list_digit_mask_card = get_mask_card_number(i)
-                card_data.append(list_digit_mask_card)
+                mask_card_data.append(list_digit_mask_card)
             elif len(i) == 20:
-                card_data.append(get_mask_account(i))
+                mask_card_data.append(get_mask_account(i))
             else:
                 return "Введены некоректные данные"
         else:
             return "Введены некоректные данные"
-    return " ".join(card_data)
+    return " ".join(mask_card_data)
 
 
 def get_data(iso_string: str) -> str:
