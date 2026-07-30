@@ -1,3 +1,8 @@
+"""Функция filter_by_state, которая принимает список словарей и опционально значение для ключа
+state (по умолчанию 'EXECUTED').Функция возвращает новый список словарей, содержащий только те словари, у которых ключ
+state соответствует указанному значению."""
+
+
 from datetime import datetime
 
 
@@ -9,6 +14,10 @@ def filter_by_state(date_list: list, state='EXECUTED') -> list:
         if i['state'] == state:
             new_list.append(i)
     return new_list
+
+
+"""Функция sort_by_date, которая принимает список словарей и необязательный параметр, задающий порядок сортировки 
+(по умолчанию — убывание). Функция должна возвращать новый список, отсортированный по дате (date)."""
 
 
 def sort_by_date(date_list, date_reverse=True):
