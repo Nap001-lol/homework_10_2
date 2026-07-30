@@ -4,15 +4,16 @@ state соответствует указанному значению."""
 
 
 from datetime import datetime
+from typing import List, Dict, Any
 
 
 def filter_by_state(date_list: list, state='EXECUTED') -> list:
     """Функция возвращает новый список словарей, содержащий только те словари, у которых ключ state
  соответствует указанному значению"""
     new_list = []
-    for i in date_list:
-        if i['state'] == state:
-            new_list.append(i)
+    for data in date_list:
+        if data['state'] == state:
+            new_list.append(data)
     return new_list
 
 
@@ -20,10 +21,8 @@ def filter_by_state(date_list: list, state='EXECUTED') -> list:
 (по умолчанию — убывание). Функция должна возвращать новый список, отсортированный по дате (date)."""
 
 
-def sort_by_date(date_list, date_reverse=True):
+def sort_by_date(date_list: List[Dict[str, Any]], date_reverse: bool = True) -> List[Dict[str, Any]]:
     """Функция возвращает новый список, отсортированный по дате (date)"""
-    # for i in date_list:
-    #     return sorted(date_list, key=i['date'], reverse=date)
     return sorted(date_list, key=lambda i: datetime.fromisoformat(i['date']), reverse=date_reverse)
 
 

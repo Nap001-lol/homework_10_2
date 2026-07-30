@@ -17,15 +17,15 @@ def mask_account_card(card_data: str) -> str:
 
     card_data_parts = card_data.split()
     masked_data = []
-    for i in card_data_parts:
-        if i.isalpha():
-            masked_data.append(i)
-        elif i.isdigit():
-            if len(i) == 16:
-                list_digit_mask_card = get_mask_card_number(i)
+    for data in card_data_parts:
+        if data.isalpha():
+            masked_data.append(data)
+        elif data.isdigit():
+            if len(data) == 16:
+                list_digit_mask_card = get_mask_card_number(data)
                 masked_data.append(list_digit_mask_card)
-            elif len(i) == 20:
-                masked_data.append(get_mask_account(i))
+            elif len(data) == 20:
+                masked_data.append(get_mask_account(data))
             else:
                 return "Введены некоректные данные"
         else:
