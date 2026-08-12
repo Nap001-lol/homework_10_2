@@ -1,6 +1,7 @@
 import pytest
 from src.widget import mask_account_card, get_data
 
+
 def test_mask_account_card():
     """Тестирование функции, которая обрабатывает информацию о картах(счетах)"""
     assert mask_account_card("VisaPlatinum 7000792289606361") == "VisaPlatinum 7000 79** **** 6361"
@@ -25,6 +26,7 @@ def valid_iso_dates():
         "2024-02-29",  # Високосный год
     ]
 
+
 @pytest.fixture
 def expected_results():
     """Фикстура с ожидаемыми результатами в формате DD.MM.YYYY"""
@@ -35,7 +37,9 @@ def expected_results():
         "29.02.2024",
     ]
 
+
 # --- Тесты ---
+
 
 def test_get_data_valid_dates(valid_iso_dates, expected_results):
     """Проверка работы функции на наборе валидных дат"""
@@ -43,11 +47,13 @@ def test_get_data_valid_dates(valid_iso_dates, expected_results):
         result = get_data(iso_str)
         assert result == expected, f"Ошибка для даты {iso_str}: ожидалось {expected}, получено {result}"
 
+
 def test_get_data_single_case():
     """Проверка конкретного случая без использования фикстур (для разнообразия)"""
     iso_input = "2021-07-15"
     expected_output = "15.07.2021"
     assert get_data(iso_input) == expected_output
+
 
 def test_get_data_invalid_format():
     """Проверка обработки неверного формата (должно выбрасываться ValueError)"""
@@ -55,16 +61,21 @@ def test_get_data_invalid_format():
     with pytest.raises(ValueError):
         get_data(invalid_input)
 
+
 def test_get_data_empty_string():
     """Проверка обработки пустой строки"""
     with pytest.raises(ValueError):
         get_data("")
 
+
 # Параметризованный тест (более современный подход вместо фикстур для простых кейсов)
-@pytest.mark.parametrize("iso_input, expected_output", [
-    ("2022-03-08", "08.03.2022"),
-    ("1985-12-31", "31.12.1985"),
-    ("2001-01-01", "01.01.2001"),
-])
+@pytest.mark.parametrize(
+    "iso_input, expected_output",
+    [
+        ("2022-03-08", "08.03.2022"),
+        ("1985-12-31", "31.12.1985"),
+        ("2001-01-01", "01.01.2001"),
+    ],
+)
 def test_get_data_parametrized(iso_input, expected_output):
     assert get_data(iso_input) == expected_output

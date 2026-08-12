@@ -6,6 +6,7 @@ Visa Platinum 7000 79 ** ** ** 6361  # выход функции
 Счет 73654108430135874305  # входной аргумент
 Счет ** 4305  # выход функции
 """
+
 from datetime import datetime
 
 from src.masks import get_mask_account, get_mask_card_number
