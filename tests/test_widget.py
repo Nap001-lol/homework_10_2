@@ -1,3 +1,4 @@
+import pytest
 from src.widget import mask_account_card, get_data
 
 def test_mask_account_card():
@@ -14,18 +15,56 @@ def test_mask_account_card():
     assert mask_account_card("Счет 35383033474447895560 Счет") == "Введены некорректные данные"
 
 
-def test_get_date():
-    """Тестирование функции форматирования времени с iso формата"""
-    pass
+@pytest.fixture
+def valid_iso_dates():
+    """Фикстура, возвращающая список валидных ISO строк для тестирования"""
+    return [
+        "2023-10-05",
+        "1999-01-31",
+        "2000-12-01",
+        "2024-02-29",  # Високосный год
+    ]
 
-# Функция
-# mask_account_card:
-# + Тесты для проверки, что функция корректно распознает и применяет нужный тип маскировки в зависимости от типа входных данных (карта или счет).
-# + Параметризованные тесты с разными типами карт и счетов для проверки универсальности функции.
-# Тестирование функции на обработку некорректных входных данных и проверка ее устойчивости к ошибкам.
-# Функция
-# get_date
-# :
-# Тестирование правильности преобразования даты.
-# Проверка работы функции на различных входных форматах даты, включая граничные случаи и нестандартные строки с датами.
-# Проверка, что функция корректно обрабатывает входные строки, где отсутствует дата.
+@pytest.fixture
+def expected_results():
+    """Фикстура с ожидаемыми результатами в формате DD.MM.YYYY"""
+    return [
+        "05.10.2023",
+        "31.01.1999",
+        "01.12.2000",
+        "29.02.2024",
+    ]
+
+# --- Тесты ---
+
+def test_get_data_valid_dates(valid_iso_dates, expected_results):
+    """Проверка работы функции на наборе валидных дат"""
+    for iso_str, expected in zip(valid_iso_dates, expected_results):
+        result = get_data(iso_str)
+        assert result == expected, f"Ошибка для даты {iso_str}: ожидалось {expected}, получено {result}"
+
+def test_get_data_single_case():
+    """Проверка конкретного случая без использования фикстур (для разнообразия)"""
+    iso_input = "2021-07-15"
+    expected_output = "15.07.2021"
+    assert get_data(iso_input) == expected_output
+
+def test_get_data_invalid_format():
+    """Проверка обработки неверного формата (должно выбрасываться ValueError)"""
+    invalid_input = "05.10.2023"  # Не ISO формат
+    with pytest.raises(ValueError):
+        get_data(invalid_input)
+
+def test_get_data_empty_string():
+    """Проверка обработки пустой строки"""
+    with pytest.raises(ValueError):
+        get_data("")
+
+# Параметризованный тест (более современный подход вместо фикстур для простых кейсов)
+@pytest.mark.parametrize("iso_input, expected_output", [
+    ("2022-03-08", "08.03.2022"),
+    ("1985-12-31", "31.12.1985"),
+    ("2001-01-01", "01.01.2001"),
+])
+def test_get_data_parametrized(iso_input, expected_output):
+    assert get_data(iso_input) == expected_output

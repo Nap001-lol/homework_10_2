@@ -6,14 +6,19 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 
-def filter_by_state(date_list: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]]:
+def filter_by_state(date_list: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]] or str:
     """Функция возвращает новый список словарей, содержащий только те словари, у которых ключ state
     соответствует указанному значению"""
     new_list = []
+    count = 0
     for data in date_list:
         if data["state"] == state:
             new_list.append(data)
-    return new_list
+            count += 1
+    if count > 0:
+        return new_list
+    else:
+        return "Ключ не соответствует значениям в словаре"
 
 
 """Функция sort_by_date, которая принимает список словарей и необязательный параметр, задающий порядок сортировки
