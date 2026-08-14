@@ -1,4 +1,7 @@
+from typing import Tuple, cast
+
 import pytest
+
 from src.masks import get_mask_account, get_mask_card_number
 
 
@@ -12,8 +15,8 @@ from src.masks import get_mask_account, get_mask_card_number
         ("", "Номер карты должен содержать только цифры!"),  # пустая строка
     ]
 )
-def card_test_data(request):
-    return request.param
+def card_test_data(request: pytest.FixtureRequest) -> Tuple[str, str]:
+    return cast(Tuple[str, str], request.param)
 
 
 # Фикстура для создания тестовых данных счетов
@@ -25,18 +28,18 @@ def card_test_data(request):
         ("736", "Номер счета должен содержать больше 4 символов"),  # короткий номер
     ]
 )
-def account_test_data(request):
-    return request.param
+def account_test_data(request: pytest.FixtureRequest) -> Tuple[str, str]:
+    return cast(Tuple[str, str], request.param)
 
 
 # Переписанный тест с использованием фикстур
-def test_get_mask_card_number(card_test_data):
+def test_get_mask_card_number(card_test_data: tuple[str, str]) -> None:
     """Тестирование правильности маскирования номера карты."""
     input_data, expected = card_test_data
     assert get_mask_card_number(input_data) == expected
 
 
-def test_get_mask_account(account_test_data):
+def test_get_mask_account(account_test_data: tuple[str, str]) -> None:
     """Тестирование правильности маскирования банковского счета"""
     input_data, expected = account_test_data
     assert get_mask_account(input_data) == expected

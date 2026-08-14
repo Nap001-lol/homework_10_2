@@ -1,9 +1,12 @@
+from typing import Any, Dict, List, Optional
+
 import pytest
+
 from src.processing import filter_by_state, sort_by_date
 
 
 @pytest.fixture
-def executed_transactions():
+def executed_transactions() -> List[Dict[str, Any]]:
     return [
         {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
         {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
@@ -13,7 +16,7 @@ def executed_transactions():
 
 
 @pytest.fixture
-def canceled_transactions():
+def canceled_transactions() -> List[Dict[str, Any]]:
     return [
         {"id": 41428829, "state": "CANCELED", "date": "2019-07-03T18:35:29.512364"},
         {"id": 939719570, "state": "CANCELED", "date": "2018-06-30T02:08:58.425572"},
@@ -23,7 +26,7 @@ def canceled_transactions():
 
 
 @pytest.fixture
-def transactions_without_state():
+def transactions_without_state() -> List[Dict[str, Any]]:
     """Список, где у одного элемента нет ключа 'state' — для проверки KeyError"""
     return [
         {"id": 41428829, "date": "2019-07-03T18:35:29.512364"},  # нет state
@@ -32,17 +35,17 @@ def transactions_without_state():
 
 
 @pytest.fixture
-def empty_transactions():
+def empty_transactions() -> List[Dict[str, Any]]:
     return []
 
 
 @pytest.fixture
-def single_transaction():
+def single_transaction() -> List[Dict[str, Any]]:
     return [{"id": 99, "date": "2023-12-31T23:59:59"}]
 
 
 @pytest.fixture
-def duplicate_dates_transactions():
+def duplicate_dates_transactions() -> List[Dict[str, Any]]:
     return [
         {"id": 1, "date": "2023-01-01T10:00:00"},
         {"id": 2, "date": "2023-01-01T10:00:00"},
@@ -51,7 +54,7 @@ def duplicate_dates_transactions():
 
 
 @pytest.fixture
-def invalid_date_format_transactions():
+def invalid_date_format_transactions() -> List[Dict[str, Any]]:
     return [
         {"id": 1, "date": "01-01-2023"},
         {"id": 2, "date": "2023/01/01"},
@@ -59,14 +62,14 @@ def invalid_date_format_transactions():
 
 
 @pytest.fixture
-def missing_date_key_transactions():
+def missing_date_key_transactions() -> List[Dict[str, Any]]:
     return [
         {"id": 1},  # нет date
         {"id": 2, "date": "2023-01-01T10:00:00"},
     ]
 
 
-def test_filter_by_state():
+def test_filter_by_state() -> None:
     assert filter_by_state(
         [
             {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
@@ -124,7 +127,9 @@ def test_filter_by_state():
             ),
         ],
     )
-    def test_filter(data_list, state, expected_result, expect_error):
+    def test_filter(
+        data_list: List[dict], state: str, expected_result: Optional[List[dict]], expect_error: bool
+    ) -> None:
         if expect_error:
             with pytest.raises(KeyError):
                 filter_by_state(data_list, state)
@@ -133,18 +138,18 @@ def test_filter_by_state():
             assert result == expected_result
 
 
-def test_empty_list():
+def test_empty_list() -> None:
     """Функция должна возвращать пустой список, если входной список пуст"""
     assert sort_by_date([]) == []
 
 
-def test_single_item():
+def test_single_item() -> None:
     """Список из одного элемента должен остаться неизменным"""
     data = [{"id": 99, "date": "2023-12-31T23:59:59"}]
     assert sort_by_date(data) == data
 
 
-def test_duplicate_dates():
+def test_duplicate_dates() -> None:
     """При одинаковых датах порядок элементов должен сохраняться (стабильная сортировка)"""
     data = [
         {"id": 1, "date": "2023-01-01T10:00:00"},
@@ -164,7 +169,7 @@ def test_duplicate_dates():
     assert result[1]["id"] == 2
 
 
-def test_invalid_date_format():
+def test_invalid_date_format() -> None:
     """Функция должна выбросить ValueError, если дата не в формате ISO"""
     bad_data = [
         {"id": 1, "date": "01-01-2023"},  # Неверный формат
@@ -174,8 +179,8 @@ def test_invalid_date_format():
         sort_by_date(bad_data)
 
 
-def test_missing_date_key():
+def test_missing_date_key() -> None:
     """Функция должна выбросить KeyError, если ключа 'date' нет в словаре"""
-    incomplete_data = [{"id": 1}, {"id": 2, "date": "2023-01-01T10:00:00"}]  # Нет поля date
+    incomplete_data: List[Dict[str, Any]] = [{"id": 1}, {"id": 2, "date": "2023-01-01T10:00:00"}]  # Нет поля date
     with pytest.raises(KeyError):
         sort_by_date(incomplete_data)

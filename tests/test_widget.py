@@ -1,8 +1,11 @@
+from typing import List
+
 import pytest
-from src.widget import mask_account_card, get_data
+
+from src.widget import get_data, mask_account_card
 
 
-def test_mask_account_card():
+def test_mask_account_card() -> None:
     """Тестирование функции, которая обрабатывает информацию о картах(счетах)"""
     assert mask_account_card("VisaPlatinum 7000792289606361") == "VisaPlatinum 7000 79** **** 6361"
     assert mask_account_card(("Счет 73654108430135874305")) == "Счет **4305"
@@ -17,7 +20,7 @@ def test_mask_account_card():
 
 
 @pytest.fixture
-def valid_iso_dates():
+def valid_iso_dates() -> List[str]:
     """Фикстура, возвращающая список валидных ISO строк для тестирования"""
     return [
         "2023-10-05",
@@ -28,7 +31,7 @@ def valid_iso_dates():
 
 
 @pytest.fixture
-def expected_results():
+def expected_results() -> List[str]:
     """Фикстура с ожидаемыми результатами в формате DD.MM.YYYY"""
     return [
         "05.10.2023",
@@ -41,28 +44,28 @@ def expected_results():
 # --- Тесты ---
 
 
-def test_get_data_valid_dates(valid_iso_dates, expected_results):
+def test_get_data_valid_dates(valid_iso_dates: List[str], expected_results: List[str]) -> None:
     """Проверка работы функции на наборе валидных дат"""
     for iso_str, expected in zip(valid_iso_dates, expected_results):
         result = get_data(iso_str)
         assert result == expected, f"Ошибка для даты {iso_str}: ожидалось {expected}, получено {result}"
 
 
-def test_get_data_single_case():
+def test_get_data_single_case() -> None:
     """Проверка конкретного случая без использования фикстур (для разнообразия)"""
     iso_input = "2021-07-15"
     expected_output = "15.07.2021"
     assert get_data(iso_input) == expected_output
 
 
-def test_get_data_invalid_format():
+def test_get_data_invalid_format() -> None:
     """Проверка обработки неверного формата (должно выбрасываться ValueError)"""
     invalid_input = "05.10.2023"  # Не ISO формат
     with pytest.raises(ValueError):
         get_data(invalid_input)
 
 
-def test_get_data_empty_string():
+def test_get_data_empty_string() -> None:
     """Проверка обработки пустой строки"""
     with pytest.raises(ValueError):
         get_data("")
@@ -77,5 +80,5 @@ def test_get_data_empty_string():
         ("2001-01-01", "01.01.2001"),
     ],
 )
-def test_get_data_parametrized(iso_input, expected_output):
+def test_get_data_parametrized(iso_input: str, expected_output: str) -> None:
     assert get_data(iso_input) == expected_output

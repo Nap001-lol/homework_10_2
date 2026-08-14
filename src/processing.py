@@ -3,10 +3,10 @@ state (по умолчанию 'EXECUTED').Функция возвращает �
 state соответствует указанному значению."""
 
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 
-def filter_by_state(date_list: List[Dict[str, Any]], state: str = "EXECUTED") -> List[Dict[str, Any]] or str:
+def filter_by_state(date_list: List[Dict[str, Any]], state: str = "EXECUTED") -> Union[List[Dict[str, Any]], str]:
     """Функция возвращает новый список словарей, содержащий только те словари, у которых ключ state
     соответствует указанному значению"""
     new_list = []
