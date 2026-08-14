@@ -9,35 +9,43 @@ Visa Platinum 7000 79 ** ** ** 6361  # выход функции
 
 from datetime import datetime
 
-from masks import get_mask_account, get_mask_card_number
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(card_data: str) -> str:
-    """Функция, котрая обрабатывает информацию о картах(счетах)"""
+    """Функция, которая обрабатывает информацию о картах(счетах)"""
 
-    list_card_data = card_data.split()
-    card_data = []
-    for i in list_card_data:
-        if i.isalpha():
-            card_data.append(i)
-        elif i.isdigit():
-            if len(i) == 16:
-                list_digit_mask_card = get_mask_card_number(i)
-                card_data.append(list_digit_mask_card)
-            elif len(i) == 20:
-                card_data.append(get_mask_account(i))
+    card_data_parts = card_data.split()
+    masked_data = []
+    isalpha_in_card_data = 0
+    digit_in_card_data = 0
+    for data in card_data_parts:
+        if data.isalpha() and isalpha_in_card_data < 1:
+            masked_data.append(data)
+            isalpha_in_card_data += 1
+        elif data.isdigit():
+            if len(data) == 16:
+                list_digit_mask_card = get_mask_card_number(data)
+                masked_data.append(list_digit_mask_card)
+                digit_in_card_data += 1
+            elif len(data) == 20:
+                masked_data.append(get_mask_account(data))
+                digit_in_card_data += 1
             else:
-                return "Введены некоректные данные"
+                return "Введены некорректные данные"
         else:
-            return "Введены некоректные данные"
-    return " ".join(card_data)
+            return "Введены некорректные данные"
+    if digit_in_card_data > 1:
+        return "Введены некорректные данные"
+    return " ".join(masked_data)
 
 
 def get_data(iso_string: str) -> str:
-    str_string_data = datetime.fromisoformat(iso_string)
-    return str(str_string_data)[8:10] + "." + str(str_string_data)[5:7] + "." + str(str_string_data)[:4]
+    """Функция, форматирования iso формата"""
+    str_data = datetime.fromisoformat(iso_string)
+    return str(str_data)[8:10] + "." + str(str_data)[5:7] + "." + str(str_data)[:4]
 
 
 if __name__ == "__main__":
-    print(mask_account_card("MasterCard 7158300734726758"))
+    print(mask_account_card("Visa Platinum 7000792289606361"))
     print(get_data("2024-03-11T02:26:18.671407"))
