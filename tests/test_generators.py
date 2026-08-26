@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Generator
+from typing import Any, Dict, List, Generator, Tuple
 
 import pytest
 
@@ -7,7 +7,11 @@ from src.generators import card_number_generator, filter_by_currency, transactio
 """Тестирование функции filter_by_currency"""
 
 
-def test_filter_by_currency(transactions: List[Dict[str, Any]], expected_result_filter_1: , expected_result_filter_2: Generator[Dict[str, Any]]):
+def test_filter_by_currency(
+    transactions: List[Dict[str, Any]],
+    expected_result_filter_1: Dict[str, Any],
+    expected_result_filter_2: Dict[str, Any]
+):
     gen = filter_by_currency(transactions)
     assert next(gen) == expected_result_filter_1
     assert next(gen) == expected_result_filter_2
@@ -20,13 +24,13 @@ def test_empty_list():
 
 
 def test_single_transaction():
-    transactions = [{"operationAmount": 100}]
+    transactions: List[Dict[str, Any]] = [{"operationAmount": 100}]
     result = list(transaction_descriptions(transactions))
     assert result == [100]
 
 
 def test_multiple_transactions():
-    transactions = [
+    transactions: List[Dict[str, Any]] = [
         {"operationAmount": 10},
         {"operationAmount": 20},
         {"operationAmount": 30},
@@ -38,19 +42,24 @@ def test_multiple_transactions():
 """Тестирование функции transaction_descriptions"""
 
 
-def test_transaction_descriptions_first_item(transactions, expected_result_description_1):
-    """Тестирование"""
+def test_transaction_descriptions_first_item(
+    transactions: List[Dict[str, Any]],
+    expected_result_description_1: Dict[str, Any]
+):
     gen = transaction_descriptions(transactions)
     assert next(gen) == expected_result_description_1
 
 
-def test_transaction_descriptions_second_item(transactions, expected_result_description_2):
+def test_transaction_descriptions_second_item(
+    transactions: List[Dict[str, Any]],
+    expected_result_description_2: Dict[str, Any]
+):
     gen = transaction_descriptions(transactions)
     next(gen)  # Пропускаем первый
     assert next(gen) == expected_result_description_2
 
 
-def test_transaction_descriptions_exhaustion(transactions):
+def test_transaction_descriptions_exhaustion(transactions: List[Dict[str, Any]]):
     gen = transaction_descriptions(transactions)
     # Получаем все элементы
     results = list(gen)
@@ -65,7 +74,7 @@ def test_transaction_descriptions_exhaustion(transactions):
 
 
 def test_transaction_descriptions_empty_list():
-    transactions = []
+    transactions: List[Dict[str, Any]] = []
     gen = transaction_descriptions(transactions)
     with pytest.raises(StopIteration):
         next(gen)
@@ -74,7 +83,7 @@ def test_transaction_descriptions_empty_list():
 """Тестирование функции card_number_generator"""
 
 
-def test_card_number_generator_basic_format(valid_range_small):
+def test_card_number_generator_basic_format(valid_range_small: Tuple[int, int]):
     start, stop = valid_range_small
     gen = card_number_generator(start, stop)
 
@@ -129,7 +138,7 @@ def test_card_number_generator_large_number_format():
     assert cards[1] == "9999 9999 9999 9999"
 
 
-def test_card_number_generator_invalid_ranges(invalid_ranges):
+def test_card_number_generator_invalid_ranges(invalid_ranges: List[Tuple[int, int]]):
     for start, stop in invalid_ranges:
         with pytest.raises(ValueError):
             list(card_number_generator(start, stop))

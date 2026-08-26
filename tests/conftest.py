@@ -1,10 +1,10 @@
 import pytest
 
-from typing import Any, Dict, Generator, List
+from typing import Any, Dict, Generator, List, Tuple
 
 
 @pytest.fixture
-def transactions():
+def transactions() -> List[Dict[str, Any]]:
     return [
         {
             "id": 939719570,
@@ -59,7 +59,7 @@ def expected_result_filter_1() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def expected_result_filter_2():
+def expected_result_filter_2() -> Dict[str, Any]:
     return {
         "id": 142264268,
         "state": "EXECUTED",
@@ -72,35 +72,35 @@ def expected_result_filter_2():
 
 
 @pytest.fixture
-def expected_result_description_1():
+def expected_result_description_1() -> Dict[str, Any]:
     return {"amount": "9824.07", "currency": {"name": "USD", "code": "USD"}}
 
 
 @pytest.fixture
-def expected_result_description_2():
+def expected_result_description_2() -> Dict[str, Any]:
     return {"amount": "79114.93", "currency": {"name": "USD", "code": "USD"}}
 
 
 @pytest.fixture
-def valid_range_small():
+def valid_range_small() -> Tuple[int, int]:
     """Небольшой диапазон для простых проверок"""
     return 1, 5
 
 
 @pytest.fixture
-def valid_range_with_leading_zeros():
+def valid_range_with_leading_zeros() -> Tuple[int, int]:
     """Диапазон, где появляются ведущие нули (например, 1 -> 0001...)"""
     return 0, 2  # Обратите внимание: 0 технически выходит за 1<=start, см. ниже тесты
 
 
 @pytest.fixture
-def boundary_values():
+def boundary_values() -> Tuple[int, int]:
     """Граничные значения по ТЗ: 1 и 9999999999999999"""
     return 1, 9999999999999999
 
 
 @pytest.fixture
-def invalid_ranges():
+def invalid_ranges() -> List[Tuple[int, int]]:
     """Набор некорректных диапазонов для проверки ValueError"""
     return [
         (0, 10),  # start < 1
