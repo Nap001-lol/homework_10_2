@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Generator, Tuple
+from typing import Any, Dict, List, Tuple
 
 import pytest
 
@@ -10,26 +10,26 @@ from src.generators import card_number_generator, filter_by_currency, transactio
 def test_filter_by_currency(
     transactions: List[Dict[str, Any]],
     expected_result_filter_1: Dict[str, Any],
-    expected_result_filter_2: Dict[str, Any]
-):
+    expected_result_filter_2: Dict[str, Any],
+) -> None:
     gen = filter_by_currency(transactions)
     assert next(gen) == expected_result_filter_1
     assert next(gen) == expected_result_filter_2
 
 
-def test_empty_list():
+def test_empty_list() -> None:
     transactions: List[Dict[str, Any]] = []
     result = list(transaction_descriptions(transactions))
     assert result == []
 
 
-def test_single_transaction():
+def test_single_transaction() -> None:
     transactions: List[Dict[str, Any]] = [{"operationAmount": 100}]
     result = list(transaction_descriptions(transactions))
     assert result == [100]
 
 
-def test_multiple_transactions():
+def test_multiple_transactions() -> None:
     transactions: List[Dict[str, Any]] = [
         {"operationAmount": 10},
         {"operationAmount": 20},
@@ -43,23 +43,21 @@ def test_multiple_transactions():
 
 
 def test_transaction_descriptions_first_item(
-    transactions: List[Dict[str, Any]],
-    expected_result_description_1: Dict[str, Any]
-):
+    transactions: List[Dict[str, Any]], expected_result_description_1: Dict[str, Any]
+) -> None:
     gen = transaction_descriptions(transactions)
     assert next(gen) == expected_result_description_1
 
 
 def test_transaction_descriptions_second_item(
-    transactions: List[Dict[str, Any]],
-    expected_result_description_2: Dict[str, Any]
-):
+    transactions: List[Dict[str, Any]], expected_result_description_2: Dict[str, Any]
+) -> None:
     gen = transaction_descriptions(transactions)
     next(gen)  # Пропускаем первый
     assert next(gen) == expected_result_description_2
 
 
-def test_transaction_descriptions_exhaustion(transactions: List[Dict[str, Any]]):
+def test_transaction_descriptions_exhaustion(transactions: List[Dict[str, Any]]) -> None:
     gen = transaction_descriptions(transactions)
     # Получаем все элементы
     results = list(gen)
@@ -73,7 +71,7 @@ def test_transaction_descriptions_exhaustion(transactions: List[Dict[str, Any]])
         assert "currency" in item
 
 
-def test_transaction_descriptions_empty_list():
+def test_transaction_descriptions_empty_list() -> None:
     transactions: List[Dict[str, Any]] = []
     gen = transaction_descriptions(transactions)
     with pytest.raises(StopIteration):
@@ -83,7 +81,7 @@ def test_transaction_descriptions_empty_list():
 """Тестирование функции card_number_generator"""
 
 
-def test_card_number_generator_basic_format(valid_range_small: Tuple[int, int]):
+def test_card_number_generator_basic_format(valid_range_small: Tuple[int, int]) -> None:
     start, stop = valid_range_small
     gen = card_number_generator(start, stop)
 
@@ -98,7 +96,7 @@ def test_card_number_generator_basic_format(valid_range_small: Tuple[int, int]):
     assert result == expected
 
 
-def test_card_number_generator_leading_zeros_and_spaces():
+def test_card_number_generator_leading_zeros_and_spaces() -> None:
     # Проверяем, что форматирование работает корректно даже для маленьких чисел
     gen = card_number_generator(1, 3)
     cards = list(gen)
@@ -115,21 +113,21 @@ def test_card_number_generator_leading_zeros_and_spaces():
         assert all(p.isdigit() for p in parts)
 
 
-def test_card_number_generator_single_value():
+def test_card_number_generator_single_value() -> None:
     gen = card_number_generator(1234567890123456, 1234567890123456)
     cards = list(gen)
     assert len(cards) == 1
     assert cards[0] == "1234 5678 9012 3456"
 
 
-def test_card_number_generator_boundary_start():
+def test_card_number_generator_boundary_start() -> None:
     gen = card_number_generator(1, 1)
     cards = list(gen)
     assert len(cards) == 1
     assert cards[0] == "0000 0000 0000 0001"
 
 
-def test_card_number_generator_large_number_format():
+def test_card_number_generator_large_number_format() -> None:
     # Пример большого числа, чтобы убедиться, что формат не ломается
     gen = card_number_generator(9999999999999998, 9999999999999999)
     cards = list(gen)
@@ -138,13 +136,13 @@ def test_card_number_generator_large_number_format():
     assert cards[1] == "9999 9999 9999 9999"
 
 
-def test_card_number_generator_invalid_ranges(invalid_ranges: List[Tuple[int, int]]):
+def test_card_number_generator_invalid_ranges(invalid_ranges: List[Tuple[int, int]]) -> None:
     for start, stop in invalid_ranges:
         with pytest.raises(ValueError):
             list(card_number_generator(start, stop))
 
 
-def test_card_number_generator_exhaustion():
+def test_card_number_generator_exhaustion() -> None:
     gen = card_number_generator(100, 102)
     assert next(gen) == "0000 0000 0000 0100"
     assert next(gen) == "0000 0000 0000 0101"
@@ -154,7 +152,7 @@ def test_card_number_generator_exhaustion():
         next(gen)
 
 
-def test_card_number_generator_step_is_one():
+def test_card_number_generator_step_is_one() -> None:
     # Убедимся, что шаг равен 1 (все числа подряд)
     gen = card_number_generator(5, 8)
     cards = list(gen)
