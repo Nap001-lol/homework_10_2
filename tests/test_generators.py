@@ -38,6 +38,22 @@ def test_multiple_transactions() -> None:
     result = list(transaction_descriptions(transactions))
     assert result == [10, 20, 30]
 
+    def test_filter_by_currency_different_currency(transactions: List[Dict[str, Any]]) -> None:
+        gen = filter_by_currency(transactions, "RUB")
+        result = list(gen)
+        assert len(result) == 2  # Должны быть 2 транзакции в RUB
+
+    def test_filter_by_currency_no_matches(transactions: List[Dict[str, Any]]) -> None:
+        gen = filter_by_currency(transactions, "EUR")
+        result = list(gen)
+        assert result == []  # Нет транзакций в EUR
+
+    def test_filter_by_currency_empty_list() -> None:
+        transactions: List[Dict[str, Any]] = []
+        gen = filter_by_currency(transactions)
+        with pytest.raises(StopIteration):
+            next(gen)
+
 
 """Тестирование функции transaction_descriptions"""
 
@@ -76,6 +92,32 @@ def test_transaction_descriptions_empty_list() -> None:
     gen = transaction_descriptions(transactions)
     with pytest.raises(StopIteration):
         next(gen)
+
+
+def test_transaction_descriptions_invalid_structure() -> None:
+    transactions = [
+        {"operationAmount": {"amount": 100}},  # Отсутствует currency
+        {"operationAmount": {"currency": {"name": "USD"}}},  # Отсутствует amount
+    ]
+    gen = transaction_descriptions(transactions)
+
+    # Проверяем, что генератор не падает при неполных данных
+    results = list(gen)
+    assert len(results) == 2
+    assert "amount" in results[0]
+    assert "currency" in results[1]
+
+
+def test_transaction_descriptions_large_numbers() -> None:
+    transactions = [
+        {"operationAmount": {"amount": "9999999999999999", "currency": {"name": "USD"}}},
+        {"operationAmount": {"amount": "0.0000000001", "currency": {"name": "USD"}}}
+    ]
+    gen = transaction_descriptions(transactions)
+    results = list(gen)
+    assert len(results) == 2
+    assert results[0]["amount"] == "9999999999999999"
+    assert results[1]["amount"] == "0.0000000001"
 
 
 """Тестирование функции card_number_generator"""
@@ -161,3 +203,12 @@ def test_card_number_generator_step_is_one() -> None:
     assert cards[1].endswith("0006")
     assert cards[2].endswith("0007")
     assert cards[3].endswith("0008")
+
+
+def test_card_number_generator_max_range() -> None:
+    start, stop = 9999999999999998, 9999999999999999
+    gen = card_number_generator(start, stop)
+    result = list(gen)
+    assert len(result) == 2
+    assert result[0] == "9999 9999 9999 9998"
+    assert result[1] == "9999 9999 9999 9999"
