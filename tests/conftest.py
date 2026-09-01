@@ -5,6 +5,7 @@ import pytest
 
 @pytest.fixture
 def transactions() -> List[Dict[str, Any]]:
+    """Стандартный набор транзакций для тестов"""
     return [
         {
             "id": 939719570,
@@ -111,9 +112,10 @@ def boundary_values() -> Tuple[int, int]:
 @pytest.fixture
 def invalid_ranges() -> List[Tuple[int, int]]:
     """Набор некорректных диапазонов для проверки ValueError"""
+    MAX_LIMIT = 9999999999999999
     return [
-        (0, 10),  # start < 1
-        (1, 10000000000000000),  # stop > 9999999999999999
-        (10, 5),  # start > stop
-        (-5, 10),  # start < 1
+        (0, 10),                 # start < 1
+        (1, MAX_LIMIT + 1),      # stop > MAX_LIMIT
+        (10, 5),                  # start > stop
+        (-5, 10),                # start < 1 (negative)
     ]
