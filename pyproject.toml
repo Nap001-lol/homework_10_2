@@ -25,7 +25,9 @@ lint = [
 ]
 dev = [
     "pytest-cov (>=7.1.0,<8.0.0)",
-    "pytest (>=9.1.1,<10.0.0)"
+    "pytest (>=9.1.1,<10.0.0)",
+    "requests (>=2.34.2,<3.0.0)",
+    "python-dotenv (>=1.2.4,<2.0.0)"
 ]
 
 [tool.black]
