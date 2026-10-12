@@ -44,6 +44,7 @@ def test_filter_by_currency_no_matches(transactions: List[Dict[str, Any]]) -> No
     result = list(gen)
     assert result == []  # Нет транзакций в EUR
 
+
 def test_filter_by_currency_empty_list() -> None:
     transactions: List[Dict[str, Any]] = []
     gen = filter_by_currency(transactions)
@@ -168,6 +169,7 @@ def test_card_number_generator_max_range() -> None:
 # filter_by_currency: дополнительные тесты
 # ------------------------------------------------------------------
 
+
 def test_filter_by_currency_no_matches_in_non_empty_list(transactions: List[Dict[str, Any]]) -> None:
     """
     Проверяем, что если в непустом списке нет совпадений по валюте,
@@ -201,7 +203,8 @@ def test_filter_by_currency_empty_input_list() -> None:
     assert results == []
 
 
-def test_filter_by_currency_default_usd(transactions: List[Dict[str, Any]], expected_result_filter_1: Dict[str, Any]) -> None:
+def test_filter_by_currency_default_usd(transactions: List[Dict[str, Any]],
+                                        expected_result_filter_1: Dict[str, Any]) -> None:
     """Проверка фильтрации по умолчанию (USD)"""
     gen = filter_by_currency(transactions)
     assert next(gen) == expected_result_filter_1
@@ -265,7 +268,9 @@ def test_transaction_descriptions_single_item_structure() -> None:
 # card_number_generator: дополнительные тесты
 # ------------------------------------------------------------------
 
+
 MAX_LIMIT = 9999999999999999
+
 
 def test_card_number_generator_boundary_max_limit() -> None:
     """

@@ -1,6 +1,7 @@
 import logging
 from functools import wraps
 
+
 def log(*, filename=None):
     def wrapper(func):
         @wraps(func)

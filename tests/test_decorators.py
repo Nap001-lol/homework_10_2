@@ -13,7 +13,6 @@ def test_out_test(capsys):
 
     my_function(2, 1)
 
-
     captured = capsys.readouterr()
     assert captured.out == "my_function ok\n"
 
