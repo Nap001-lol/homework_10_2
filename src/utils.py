@@ -2,6 +2,7 @@ import json
 
 
 def data_json(file_path="../data/operations.json"):
+    """Преобразует данные JSON в Python из data/operations.json"""
     clean_list = []
     try:
         with open(file_path, encoding="utf-8") as file:
@@ -15,7 +16,13 @@ def data_json(file_path="../data/operations.json"):
         return clean_list
 
 
+if __name__ == '__main__':
+    my_json = []
+    print(data_json(my_json))
+
+
 def transaction_amount():
+    """Из полученных данных вычисляет сумму RUB, USD, EUR"""
     transaction_amount_rub = 0
     transaction_amount_usd = 0
     transaction_amount_eur = 0
@@ -28,8 +35,4 @@ def transaction_amount():
         elif operation_amount and operation_amount.get("currency", {}).get("code") == "EUR":
             transaction_amount_eur += float(operation_amount["amount"])
 
-    return [transaction_amount_rub, transaction_amount_usd, transaction_amount_eur]
-
-
-if __name__ == "__main__":
-    print(transaction_amount())
+    return [{'amount_RUB': transaction_amount_rub, 'amount_USD': transaction_amount_usd, 'amount_EUR': transaction_amount_eur}]
