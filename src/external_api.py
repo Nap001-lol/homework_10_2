@@ -1,21 +1,39 @@
+import logging
 import os
 
 import requests
 from dotenv import load_dotenv
 
 
-load_dotenv(".env")
+load_dotenv("../.env")
 API_KEY = os.getenv("API_KEY")
 
 
-def transaction(payload):
+def transaction(payload: dict[str, str]) -> float | None:
     url = "https://api.apilayer.com/exchangerates_data/convert"
-
     headers = {"apikey": API_KEY}
 
-    response = requests.get(url, headers=headers, params=payload)
-
     try:
-        return response.json()["result"]
-    except KeyError:
-        return "Сумма изменяемой валюты равна 0!"
+        response = requests.get(url, headers=headers, params=payload, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        logging.error(f"Ошибка при запросе к API: {e}")
+        return None
+
+    data = response.json()
+    return data.get("result", 0)
+
+
+if __name__ == '__main__':
+
+payload = {
+    "from": "USD",
+    "to": "RUB",
+    "amount": 100
+}
+
+result = transaction(payload)
+if result is not None:
+    print(f"Результат конвертации: {result}")
+else:
+    print("Конвертация не удалась")

@@ -1,7 +1,7 @@
 import json
 
 
-def data_json(file_path):
+def data_json(file_path: str) -> list[dict]:
     """Преобразует данные JSON в Python из data/operations.json"""
     clean_list = []
     try:
