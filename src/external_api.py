@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-def _get_api_key() -> str:
+def _get_api_key() -> str | None:
     return os.getenv("API_KEY")
 
 
