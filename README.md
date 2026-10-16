@@ -258,3 +258,7 @@ for card_number in card_number_generator(1, 5):
     0000 0000 0000 0004
     0000 0000 0000 0005
 ```
+
+##Настройка
+1. Скопируйте '.env.example' в '.env'
+2. Впишите свой API_KEY

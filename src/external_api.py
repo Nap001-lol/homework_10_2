@@ -1,17 +1,19 @@
 import logging
 import os
-
+from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
-load_dotenv("../.env")
-API_KEY = os.getenv("API_KEY")
+def _get_api_key() -> str:
+    return os.getenv("API_KEY")
 
 
 def transaction(payload: dict[str, str]) -> float | None:
     url = "https://api.apilayer.com/exchangerates_data/convert"
-    headers = {"apikey": API_KEY}
+    headers = {"apikey": _get_api_key()}
 
     try:
         response = requests.get(url, headers=headers, params=payload, timeout=10)
