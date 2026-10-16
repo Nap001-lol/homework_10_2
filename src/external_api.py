@@ -21,19 +21,21 @@ def transaction(payload: dict[str, str]) -> float | None:
         return None
 
     data = response.json()
-    return data.get("result", 0)
+    if "result" not in data:
+        logging.error(f'Неожиданный ответ API: {data}')
+        return None
+    return data["result"]
 
 
 if __name__ == '__main__':
-
-payload = {
+    payload = {
     "from": "USD",
     "to": "RUB",
     "amount": 100
-}
+    }
 
-result = transaction(payload)
-if result is not None:
-    print(f"Результат конвертации: {result}")
-else:
-    print("Конвертация не удалась")
+    result = transaction(payload)
+    if result is not None:
+        print(f"Результат конвертации: {result}")
+    else:
+        print("Конвертация не удалась")
