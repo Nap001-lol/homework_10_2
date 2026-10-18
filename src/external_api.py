@@ -11,7 +11,7 @@ def _get_api_key() -> str | None:
     return os.getenv("API_KEY")
 
 
-def transaction(payload: dict[str, str]) -> float | None:
+def transaction(payload: dict[str, str | int | float]) -> float | None:
     url = "https://api.apilayer.com/exchangerates_data/convert"
     headers = {"apikey": _get_api_key()}
 

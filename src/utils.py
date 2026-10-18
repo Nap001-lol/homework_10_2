@@ -12,7 +12,6 @@ def data_json(file_path: str) -> list[dict]:
                 logging.warning(f"JSON содержит не список: {type(data)}")
                 return clean_list
             return data
-        return data
     except FileNotFoundError:
         logging.warning(f"Файл не найден: {file_path}")
         return clean_list

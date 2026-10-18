@@ -1,44 +1,89 @@
-from unittest.mock import Mock
-from src.utils import data_json, transaction_amount
+import json
+from unittest.mock import mock_open, patch
+
+from src import utils
 
 
-# @pytest.fixture
-# def fixture_data_json():
-#     """Данные из JSON для utils"""
-#     return [
-#   {
-#     "id": 441945886,
-#     "state": "EXECUTED",
-#     "date": "2019-08-26T10:50:58.294041",
-#     "operationAmount": {
-#       "amount": "31957.58",
-#       "currency": {
-#         "name": "руб.",
-#         "code": "RUB"
-#       }
-#     },
-#     "description": "Перевод организации",
-#     "from": "Maestro 1596837868705199",
-#     "to": "Счет 64686473678894779589"
-#   },
-#   {
-#     "id": 41428829,
-#     "state": "EXECUTED",
-#     "date": "2019-07-03T18:35:29.512364",
-#     "operationAmount": {
-#       "amount": "8221.37",
-#       "currency": {
-#         "name": "USD",
-#         "code": "USD"
-#       }
-#     },
-#     "description": "Перевод организации",
-#     "from": "MasterCard 7158300734726758",
-#     "to": "Счет 35383033474447895560"
-#   }]
+def test_data_json_with_open_mock():
+    fake_data = [{"id": 1}, {"id": 2}]
+
+    m = mock_open(read_data=json.dumps(fake_data))
+
+    with patch("builtins.open", m):
+        result = utils.data_json("fake_path.json")
+    assert result == fake_data
 
 
-# def test_data_json():
-#     mock_data_json = Mock(return_value = [])
-#     clean_list = mock_data_json
-#     assert data_json(clean_list) == []
+def test_data_json_no_file():
+    with patch("builtins.open", side_effect=FileNotFoundError):
+        result = utils.data_json("fake_path.json")
+    assert result == []
+
+
+def test_data_json_decode_error():
+    m = mock_open(read_data="{не json")
+
+    with patch("builtins.open", m) as mock_data:
+        result = utils.data_json("fake_path")
+    assert result == []
+    mock_data.assert_called_once_with("fake_path", encoding="utf-8")
+
+
+def test_transaction_amount_rub():
+    transactions = [{"operationAmount": {"amount": "31957.58", "currency": {"code": "RUB"}}}]
+
+    result = {"amount_RUB": 31957.58, "amount_USD": 0, "amount_EUR": 0}
+    assert utils.transaction_amount(transactions) == result
+
+
+def test_transaction_amount_all():
+    transactions = [
+        {"operationAmount": {"amount": "100", "currency": {"code": "RUB"}}},
+        {"operationAmount": {"amount": "50", "currency": {"code": "USD"}}},
+        {"operationAmount": {"amount": "20", "currency": {"code": "EUR"}}},
+    ]
+
+    result = {"amount_RUB": 100, "amount_USD": 50, "amount_EUR": 20}
+    assert utils.transaction_amount(transactions) == result
+
+
+def test_transactions_amount_all_zero():
+    transactions = [
+        {"operationAmount": {"amount": "0", "currency": {"code": "RUB"}}},
+        {"operationAmount": {"amount": "0", "currency": {"code": "USD"}}},
+        {"operationAmount": {"amount": "0", "currency": {"code": "EUR"}}},
+    ]
+
+    result = {"amount_RUB": 0, "amount_USD": 0, "amount_EUR": 0}
+    assert utils.transaction_amount(transactions) == result
+
+
+def test_transactions_amount_incorrect_data():
+    transaction = [{"operationAmount": {"amount": "abc", "currency": {"code": "EUR"}}}]
+
+    result = {"amount_RUB": 0, "amount_USD": 0, "amount_EUR": 0}
+    assert utils.transaction_amount(transaction) == result
+
+
+def test_transaction_amount_no_operation_amount():
+    transaction = [{"id": 1}]
+    result = {"amount_RUB": 0, "amount_USD": 0, "amount_EUR": 0}
+    assert utils.transaction_amount(transaction) == result
+
+
+def test_transactions_amount_clean_list():
+    transactions = []
+    result = {"amount_RUB": 0, "amount_USD": 0, "amount_EUR": 0}
+    assert utils.transaction_amount(transactions) == result
+
+
+def test_data_json_with_real_file(tmp_path):
+    file_path = tmp_path / "test.json"
+    file_path.write_text(
+        json.dumps([{"id": 1}, {"id": 2}], ensure_ascii=False),
+        encoding="utf-8"
+    )
+
+    result = utils.data_json(str(file_path))
+
+    assert result == [{"id": 1}, {"id": 2}]
