@@ -8,21 +8,17 @@ XXXX XX** **** XXXX, где X — это цифра номера. То есть 
 7000 79** **** 6361  # выход функции"""
 
 
-def get_mask_card_number(input_card_number: str) -> str:
-    """Функция маскировки банковской карты"""
-    if not input_card_number.isdigit():
-        return "Номер карты должен содержать только цифры!"
-    if len(input_card_number) != 16:
-        return "Номер карты должен содержать 16 символов"
-    else:
-        list_input_cart_number = [
-            str(input_card_number)[0:4],
-            str(input_card_number)[4:6] + "**",
-            "****",
-            str(input_card_number)[12:16],
-        ]
+def get_mask_card_number(card_number: str) -> str:
+    """Функция маскировки банковской карты
 
-    return " ".join(list_input_cart_number)
+    При введении неверных данных будет вызывать ValueError"""
+    if not card_number:
+        raise ValueError("Номер карты не может быть пустым!")
+    if not card_number.isdigit():
+        raise ValueError("Номер карты должен содержать только цифры!")
+    if len(card_number) != 16:
+        raise ValueError("Номер карты должен содержать 16 символов")
+    return f"{card_number[:4]} {card_number[4:6]}** **** {card_number[12:]}"
 
 
 """ Функция
@@ -34,16 +30,14 @@ get_mask_account
 **4305  # выход функции """
 
 
-def get_mask_account(input_number_account: str) -> str:
-    """Функция маскировки номера банковского счета"""
-    if not input_number_account.isdigit():
-        return "Номер карты должен содержать только цифры!"
-    if len(input_number_account) >= 4:
-        return "**" + str(input_number_account)[-4:]
-    else:
-        return "Номер счета должен содержать больше 4 символов"
+def get_mask_account(number_account: str) -> str:
+    """Функция маскировки номера банковского счета
 
-
-if __name__ == "__main__":
-    print(get_mask_card_number("7000792289606361"))
-    print(get_mask_account("7361342151353125132"))
+    При введении неверных данных будет вызывать ValueError"""
+    if not number_account:
+        raise ValueError("Номер счета не должен быть пустым!")
+    if not number_account.isdigit():
+        raise ValueError("Номер счета должен содержать только цифры!")
+    if len(number_account) >= 4:
+        return f"**{number_account[-4:]}"
+    raise ValueError("Номер счета должен содержать больше 4 символов")
