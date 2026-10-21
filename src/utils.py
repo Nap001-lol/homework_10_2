@@ -1,6 +1,7 @@
 import json
 import logging
 
+
 def data_json(file_path: str) -> list[dict]:
     """Преобразует данные JSON в Python из data/operations.json"""
     clean_list = []
@@ -31,7 +32,7 @@ def transaction_amount(transactions_all: list[dict]) -> dict[str, float]:
         currency = amount_data.get("currency", {}).get("code")
         try:
             amount = float(amount_data.get("amount", 0))
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             logging.warning(f"Некорректная сумма в транзакции: {amount_data}")
             continue
 
@@ -43,15 +44,16 @@ def transaction_amount(transactions_all: list[dict]) -> dict[str, float]:
             transaction_amount_eur += amount
 
     return {
-        'amount_RUB': transaction_amount_rub,
-        'amount_USD': transaction_amount_usd,
-        'amount_EUR': transaction_amount_eur
+        "amount_RUB": transaction_amount_rub,
+        "amount_USD": transaction_amount_usd,
+        "amount_EUR": transaction_amount_eur,
     }
 
 
 def total_rub(transactions_all: list[dict]) -> float:
     """Суммирует все транзакции в рублях (через external_api)"""
     from src.external_api import transaction
+
     total = 0
     for item in transactions_all:
         rub = transaction(item)
@@ -60,7 +62,7 @@ def total_rub(transactions_all: list[dict]) -> float:
     return total
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     my_json = "../data/operations.json"
     transactions = data_json(my_json)
     print("Сумма по валютам:", transaction_amount(transactions))
