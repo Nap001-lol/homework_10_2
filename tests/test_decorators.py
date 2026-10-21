@@ -1,5 +1,6 @@
 import pytest
-from decorators.log import my_function, log
+
+from decorators.log import log, my_function
 
 
 def test_work_func():
