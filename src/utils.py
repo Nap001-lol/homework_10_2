@@ -1,7 +1,6 @@
 import json
 import logging
 
-
 def data_json(file_path: str) -> list[dict]:
     """Преобразует данные JSON в Python из data/operations.json"""
     clean_list = []
@@ -20,17 +19,12 @@ def data_json(file_path: str) -> list[dict]:
         return clean_list
 
 
-# if __name__ == '__main__':
-#     my_json = "../data/operations.json"
-#     print(data_json(my_json))
-
-
-def transaction_amount(transactions: list[dict]) -> dict[str, float]:
+def transaction_amount(transactions_all: list[dict]) -> dict[str, float]:
     """Из полученных данных вычисляет сумму RUB, USD, EUR"""
     transaction_amount_rub = 0
     transaction_amount_usd = 0
     transaction_amount_eur = 0
-    for item in transactions:
+    for item in transactions_all:
         amount_data = item.get("operationAmount")
         if not amount_data:
             continue
@@ -48,7 +42,6 @@ def transaction_amount(transactions: list[dict]) -> dict[str, float]:
         elif currency == "EUR":
             transaction_amount_eur += amount
 
-
     return {
         'amount_RUB': transaction_amount_rub,
         'amount_USD': transaction_amount_usd,
@@ -56,7 +49,19 @@ def transaction_amount(transactions: list[dict]) -> dict[str, float]:
     }
 
 
-# if __name__ == '__main__':
-#     my_json = "../data/operations.json"
-#     transactions = data_json(my_json)
-#     print(transaction_amount(transactions))
+def total_rub(transactions_all: list[dict]) -> float:
+    """Суммирует все транзакции в рублях (через external_api)"""
+    from src.external_api import transaction
+    total = 0
+    for item in transactions_all:
+        rub = transaction(item)
+        if rub is not None:
+            total += rub
+    return total
+
+
+if __name__ == '__main__':
+    my_json = "../data/operations.json"
+    transactions = data_json(my_json)
+    print("Сумма по валютам:", transaction_amount(transactions))
+    print("Итого в рублях:", total_rub(transactions))
