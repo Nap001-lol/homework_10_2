@@ -114,8 +114,8 @@ def invalid_ranges() -> List[Tuple[int, int]]:
     """Набор некорректных диапазонов для проверки ValueError"""
     MAX_LIMIT = 9999999999999999
     return [
-        (0, 10),                 # start < 1
-        (1, MAX_LIMIT + 1),      # stop > MAX_LIMIT
-        (10, 5),                  # start > stop
-        (-5, 10),                # start < 1 (negative)
+        (0, 10),  # start < 1
+        (1, MAX_LIMIT + 1),  # stop > MAX_LIMIT
+        (10, 5),  # start > stop
+        (-5, 10),  # start < 1 (negative)
     ]

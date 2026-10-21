@@ -26,6 +26,7 @@ def test_error_handling(capsys):
     @log()
     def my_function(x, y):
         return x / y
+
     try:
         my_function(2, 0)
     except ZeroDivisionError:

@@ -79,10 +79,7 @@ def test_transactions_amount_clean_list():
 
 def test_data_json_with_real_file(tmp_path):
     file_path = tmp_path / "test.json"
-    file_path.write_text(
-        json.dumps([{"id": 1}, {"id": 2}], ensure_ascii=False),
-        encoding="utf-8"
-    )
+    file_path.write_text(json.dumps([{"id": 1}, {"id": 2}], ensure_ascii=False), encoding="utf-8")
 
     result = utils.data_json(str(file_path))
 

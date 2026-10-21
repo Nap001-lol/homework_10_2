@@ -101,7 +101,7 @@ def test_transaction_descriptions_invalid_structure() -> None:
 def test_transaction_descriptions_large_numbers() -> None:
     transactions = [
         {"operationAmount": {"amount": "9999999999999999", "currency": {"name": "USD"}}},
-        {"operationAmount": {"amount": "0.0000000001", "currency": {"name": "USD"}}}
+        {"operationAmount": {"amount": "0.0000000001", "currency": {"name": "USD"}}},
     ]
     gen = transaction_descriptions(transactions)
     results = list(gen)
@@ -165,6 +165,7 @@ def test_card_number_generator_max_range() -> None:
     assert result[0] == "9999 9999 9999 9998"
     assert result[1] == "9999 9999 9999 9999"
 
+
 # ------------------------------------------------------------------
 # filter_by_currency: дополнительные тесты
 # ------------------------------------------------------------------
@@ -203,8 +204,9 @@ def test_filter_by_currency_empty_input_list() -> None:
     assert results == []
 
 
-def test_filter_by_currency_default_usd(transactions: List[Dict[str, Any]],
-                                        expected_result_filter_1: Dict[str, Any]) -> None:
+def test_filter_by_currency_default_usd(
+    transactions: List[Dict[str, Any]], expected_result_filter_1: Dict[str, Any]
+) -> None:
     """Проверка фильтрации по умолчанию (USD)"""
     gen = filter_by_currency(transactions)
     assert next(gen) == expected_result_filter_1
@@ -216,6 +218,7 @@ def test_filter_by_currency_default_usd(transactions: List[Dict[str, Any]],
 # ------------------------------------------------------------------
 # transaction_descriptions: дополнительные тесты
 # ------------------------------------------------------------------
+
 
 def test_transaction_descriptions_missing_operation_amount_key() -> None:
     """
@@ -354,6 +357,7 @@ def test_card_number_generator_small_range_exhaustion() -> None:
 # Интеграционные/сводные тесты (опционально, для уверенности)
 # ------------------------------------------------------------------
 
+
 def test_all_generators_empty_input() -> None:
     """
     Все три генератора должны корректно обрабатывать пустой список.
@@ -438,10 +442,9 @@ def test_card_number_generator_single_value() -> None:
     assert len(cards) == 1
     assert cards[0] == "1234 5678 9012 3456"
 
-
-# def test_card_number_generator_boundary_values() -> None:
-#     """Проверка граничных значений (минимум и максимум)"""
-#     MAX_LIMIT = 9999999999999999
+    # def test_card_number_generator_boundary_values() -> None:
+    #     """Проверка граничных значений (минимум и максимум)"""
+    #     MAX_LIMIT = 9999999999999999
 
     # Минимум
     gen_min = card_number_generator(1, 1)
