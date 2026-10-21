@@ -9,12 +9,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 
-def get_api_key() -> str:
+def _get_api_key() -> str:
     """Возвращает API-ключ из .env или None"""
     return os.getenv("API_KEY")
 
 
-def convert_to_rub(amount: float, currency: str) -> float | None:
+def _convert_to_rub(amount: float, currency: str) -> float | None:
     """Конвертирует сумму из валюты в RUB через API apilayer"""
     url = "https://api.apilayer.com/exchangerates_data/convert"
     headers = {"apikey": get_api_key()}
@@ -52,7 +52,7 @@ def transaction(transaction_all: dict) -> float | None:
     if currency == "RUB":
         return amount
     if currency in ("EUR", "USD"):
-        return convert_to_rub(amount, currency)
+        return _convert_to_rub(amount, currency)
 
     logging.warning(f"Неизвестная валюта: {currency}")
     return None
