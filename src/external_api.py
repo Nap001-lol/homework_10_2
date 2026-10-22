@@ -17,7 +17,7 @@ def _get_api_key() -> str:
 def _convert_to_rub(amount: float, currency: str) -> float | None:
     """Конвертирует сумму из валюты в RUB через API apilayer"""
     url = "https://api.apilayer.com/exchangerates_data/convert"
-    headers = {"apikey": get_api_key()}
+    headers = {"apikey": _get_api_key()}
     payload = {"from": currency, "to": "RUB", "amount": amount}
 
     try:
@@ -44,7 +44,7 @@ def transaction(transaction_all: dict) -> float | None:
 
     try:
         amount = float(amount_data.get("amount", 0))
-    except ValueError, TypeError:
+    except (ValueError, TypeError):
         logging.warning(f"Некорректная сумма: {amount_data}")
         return None
 
