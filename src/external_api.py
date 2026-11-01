@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 
-def _get_api_key() -> str:
+def _get_api_key() -> str | None:
     """Возвращает API-ключ из .env или None"""
     return os.getenv("API_KEY")
 
@@ -17,8 +17,14 @@ def _get_api_key() -> str:
 def _convert_to_rub(amount: float, currency: str) -> float | None:
     """Конвертирует сумму из валюты в RUB через API apilayer"""
     url = "https://api.apilayer.com/exchangerates_data/convert"
-    headers = {"apikey": _get_api_key()}
-    payload = {"from": currency, "to": "RUB", "amount": amount}
+
+    api_key = _get_api_key()
+    if api_key is None:
+        logging.error("API-ключ не найден в .env")
+        return None
+
+    headers = {"apikey": api_key}
+    payload = {"from": currency, "to": "RUB", "amount": str(amount)}
 
     try:
         response = requests.get(url, headers=headers, params=payload, timeout=10)
@@ -31,7 +37,7 @@ def _convert_to_rub(amount: float, currency: str) -> float | None:
     if "result" not in data:
         logging.error(f"Неожиданный ответ API: {data}")
         return None
-    return data["result"]
+    return float(data["result"])
 
 
 def transaction(transaction_all: dict) -> float | None:
@@ -44,7 +50,7 @@ def transaction(transaction_all: dict) -> float | None:
 
     try:
         amount = float(amount_data.get("amount", 0))
-    except ValueError, TypeError:
+    except (ValueError, TypeError):
         logging.warning(f"Некорректная сумма: {amount_data}")
         return None
 
