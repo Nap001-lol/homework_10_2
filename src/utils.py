@@ -2,7 +2,6 @@ import json
 import logging
 from pathlib import Path
 
-
 # Создаем папку logs
 BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_DIR = BASE_DIR / "logs"
